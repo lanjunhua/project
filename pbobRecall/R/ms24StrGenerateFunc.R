@@ -18,26 +18,18 @@ msRecallPbocLLD <- function(dfSTPbocLLD, dfRecallPbocPDD, monthOffSet, ...){
       TIMEL_SRPRCD24M1 <- msSysVarsPbocMonthCal(as.Date(TIMEL_LSTINQ), -(24 + monthOffSet - 1))
       TIMEL_ERPRCD24M1 <- msSysVarsPbocMonthCal(as.Date(TIMEL_LSTINQ), -monthOffSet)
       
-      mapStratTime <- TIMEL_SRPRCD24M 
-      mapEndTime <- TIMEL_LSTINQ - months(24)
-      day(mapEndTime) <- 30
-      
-      # map function
-      middleStr <- msMap24MStrFunc(mapStratTime, mapEndTime, TIME_NUM_DQ)
-      
-      
-      frontTime <- floor(difftime(TIMEL_LSTINQ, TIMEL_ISS, units = 'days')/30)
-      frontCompTime <- 24 + monthOffSet
-      is.na(frontTime) <- 9999
-      
-      
-      if(frontTime == frontCompTime){
-        frontStr <- '*'
-      } else if(frontTime < frontCompTime){
-        frontStr <- rep('/', frontCompTime - frontTime)
-      } else if(frontTime > frontCompTime ){
-        frontStr <- NA
-      }
+       allLiveTime <- as.numeric(floor(difftime(as.Date(TIMEL_LSTINQ), as.Date(TIMEL_ISS), units = 'days')/30))
+       allLiveTime[is.na(allLiveTime)] <- 9999
+       frontCompTime <- 24 + monthOffSet
+  
+       #dateDiff <- msSysVarsPbocTimeDiffV(TIMEL_SRPRCD24M1, TIMEL_ISS)
+       frontStr <- msRecallPbocFrontStrFunc(TIMEL_ISS, TIMEL_SRPRCD24M1, monthOffSet)
+  
+       mapStratTime <- ifelse(allLiveTime > frontCompTime, TIMEL_SRPRCD24M1, ifelse(allLiveTime == frontCompTime, TIMEL_SRPRCD24M1 + months(1),
+                                                                               TIMEL_SRPRCD24M1 + months(frontCompTime - allLiveTime)))
+       mapEndTime <- msSysVarsPbocMonthCal(as.Date(TIMEL_LSTINQ), -24)
+       mapLength <- msSysVarsPbocTimeDiffV(mapEndTime, mapStratTime)
+       middleStr <- msRecallPbocMap24MStrFunc(mapStratTime, mapLength, TIME_NUM_DQ)
       
       all24MStr = paste0(na.omit(c(frontStr, middleStr, remained24MStr)), collapse = '')
       
