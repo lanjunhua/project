@@ -30,3 +30,10 @@ msRecallPbocMap24MStrFunc <- Vectorize(function(mapStratTime, mapLength, mapEndT
     return(mapStr)
   }
 })
+
+#tempMapStratTime <- c('2013-04-01','2013-03-01')
+#tempMapLength <- c(12, 12)
+#tempStr <- c('2014.03:7,2014.02:7,2014.01:7,2013.12:7,2013.11:7,2013.10:7,2013.09:7,2013.08:7,2013.07:7,2012.09:7,2012.08:7,2012.07:7,2012.06:7,2011.12:7'
+#             ,'2013.12:1,2013.01:1')
+
+
